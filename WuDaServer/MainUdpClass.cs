@@ -433,7 +433,7 @@ public class MainUdpClass
                                     //设置升级属性
                                     dataItem.tUpdate.IsNeedUpdate = true;
                                 }
-                                else //普通指令可以直接构造并发送
+                                else if(cmdStrings[i, 1] != "search")//普通指令可以直接构造并发送
                                 {
                                     byte[] cmd = CmdClass.makeCommand(cmdStrings[i, 1], cmdStrings[i, 2],
                                         cmdStrings[i, 3],
