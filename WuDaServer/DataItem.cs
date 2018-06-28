@@ -220,7 +220,7 @@ class DataItem
             Console.WriteLine(ex);
             UtilClass.writeLog(ex.ToString());
         }
-        UtilClass.writeLog(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "硬件" + strID + "收到数据：" + UtilClass.byteToHexStr(datagramBytes));
+        UtilClass.writeLog(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "从硬件" + strID + "收到数据：" + UtilClass.byteToHexStr(datagramBytes));
     }
 
     /// <summary>
@@ -231,7 +231,7 @@ class DataItem
     {
         try
         {
-            UtilClass.writeLog(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "硬件" + strID + "发送数据：" + UtilClass.byteToHexStr(cmd));
+            UtilClass.writeLog(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff") + "向硬件" + strID + "发送数据：" + UtilClass.byteToHexStr(cmd));
             socket.BeginSendTo(cmd, 0, cmd.Length, SocketFlags.None, remote, new AsyncCallback(OnSend), socket);
         }
         catch (Exception ex)

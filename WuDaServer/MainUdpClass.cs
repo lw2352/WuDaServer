@@ -39,7 +39,7 @@ public class MainUdpClass
     public int bufferLen { get; set; }
 
     public int overTime { get; set; }//发送超时次数
-    public int maxOverTime { get; set; }//超时的时间长度
+    public int maxOverTimes { get; set; }//超时的时间长度
 
     //public int checkRecDataQueueTimeInterval { get; set; } // 检查接收数据包队列时间休息间隔(ms)
     public int checkSendDataQueueTimeInterval { get; set; } // 检查发送命令队列时间休息间隔(ms)
@@ -47,6 +47,8 @@ public class MainUdpClass
 
     public int startID { get; set; }//起始ID号
     public int stopID { get; set; }//结束ID号
+
+    public byte channel { get; set; }//信道
 
     private static int updateDataLength = 32 * 1024;//升级文件最大长度
 
@@ -111,7 +113,7 @@ public class MainUdpClass
     /// <summary>
     /// 服务开始，进行初始化，传入参数
     /// </summary>
-    public void Start()
+    public bool Start()
     {
         buffer = new byte[bufferLen];
         if (OpenServer() == true)
@@ -120,15 +122,18 @@ public class MainUdpClass
             if (serviceInit() == false)
             {
                 UtilClass.writeLog("启动失败");
+                return false;
             }
             
             //初始化设备状态为false
             DbClass.UpdateAllSensorInfoToFalse();
             UtilClass.writeLog("启动成功");
+            return true;
         }
         else
         {
             UtilClass.writeLog("启动失败");
+            return false;
         }
     }
 
@@ -252,7 +257,6 @@ public class MainUdpClass
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
             UtilClass.writeLog(ex.ToString());
         }
     }
@@ -262,20 +266,22 @@ public class MainUdpClass
     private void cmdOverTime(object source, ElapsedEventArgs e)
     {
         DataItem dataItem = (DataItem)htClient[tCmdStatus.strID]; //取出ID对应的dataitem
-        if (dataItem.sendCmdFailTimes == maxOverTime)
-        {
+        if (dataItem.sendCmdFailTimes == maxOverTimes)
+        {          
             cmdQueue.Dequeue();
             dataItem.status = false;
             dataItem.sendCmdFailTimes = 0;
             //update sql
             DbClass.UpdateSensorInfo(dataItem.strID, "status", dataItem.status.ToString());
+            tCmdStatus.strID = null;
         }
         else
-        {
+        {           
             byte[] cmd = cmdQueue.Dequeue(); //读取 Queue<T> 开始处的对象并移除
             cmdQueue.Enqueue(cmd);//加到队尾            
             dataItem.sendCmdFailTimes++;
-            UtilClass.writeLog("设备" + tCmdStatus.strID + "接收"+tCmdStatus.cmdName+"命令超时次数为"+ dataItem.sendCmdFailTimes.ToString());
+            UtilClass.writeLog("从设备" + tCmdStatus.strID + "接收"+tCmdStatus.cmdName+"命令超时次数为"+ dataItem.sendCmdFailTimes.ToString());
+            tCmdStatus.strID = null;
         }
     }
 
@@ -283,7 +289,11 @@ public class MainUdpClass
     public static void getClientDataSuccess()
     {
         cmdTimer.Stop();//关闭定时器
-        cmdQueue.Dequeue();//移除一条命令
+        tCmdStatus.strID = null;
+        if (cmdQueue.Count > 0)
+        {          
+            cmdQueue.Dequeue(); //移除一条命令
+        }
     }
     
 
@@ -318,13 +328,12 @@ public class MainUdpClass
                 }
                 else//发送队列里面的命令数量为0
                 {
+                    tCmdStatus.strID = null;
                     tCmdStatus.cmdName = null;
-                    
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 UtilClass.writeLog(ex.ToString());
             }
             Thread.Sleep(checkSendDataQueueTimeInterval); //当前数据处理线程休眠一段时间
@@ -384,6 +393,8 @@ public class MainUdpClass
                 {
                     tCmdStatus.cmdName = cmdStrings[0, 1];
                     tCmdStatus.strID = null;
+                    UtilClass.writeLog("收到命令为："+ tCmdStatus.cmdName);
+                    
                     //数据添加到全局的queue队列，由发送任务来分发给设备类。如果上一次的命令没有执行完，不接受新命令
                     if (tCmdStatus.cmdName == "search")
                     {
@@ -395,39 +406,44 @@ public class MainUdpClass
                         if (htClient.ContainsKey(cmdStrings[i, 0]))
                         {
                             DataItem dataItem = (DataItem)htClient[cmdStrings[i, 0]];
-
-                            //有一些指令需要多包发送和读取                        
-                            if (cmdStrings[i, 1] == "update")
+                            //判断在线状态
+                            if (dataItem.status == true)
                             {
-                                using (FileStream fsSource = new FileStream(cmdStrings[i, 3],
-                                    FileMode.Open, FileAccess.Read))
+                                //有一些指令需要多包发送和读取                        
+                                if (cmdStrings[i, 1] == "update")
                                 {
-                                    // Read the source file into a byte array.
-                                    for (int j = 0; j < updateDataLength; j++) //先用0xFF填充
+                                    using (FileStream fsSource = new FileStream(cmdStrings[i, 3],
+                                        FileMode.Open, FileAccess.Read))
                                     {
-                                        dataItem.updateData[j] = 0xFF;
-                                    }
-                                    int numBytesToRead = (int)fsSource.Length;
-                                    if (numBytesToRead > 0)
-                                    {
-                                        // Read may return anything from 0 to numBytesToRead.
-                                        fsSource.Read(dataItem.updateData, 0, numBytesToRead);
+                                        // Read the source file into a byte array.
+                                        for (int j = 0; j < updateDataLength; j++) //先用0xFF填充
+                                        {
+                                            dataItem.updateData[j] = 0xFF;
+                                        }
+
+                                        int numBytesToRead = (int) fsSource.Length;
+                                        if (numBytesToRead > 0)
+                                        {
+                                            // Read may return anything from 0 to numBytesToRead.
+                                            fsSource.Read(dataItem.updateData, 0, numBytesToRead);
+                                        }
+
                                     }
 
+                                    //设置升级属性
+                                    dataItem.tUpdate.IsNeedUpdate = true;
                                 }
-                                //设置升级属性
-                                dataItem.tUpdate.IsNeedUpdate = true;
-                            }
-                            else//普通指令可以直接构造并发送
-                            {
-                                byte[] cmd = CmdClass.makeCommand(cmdStrings[i, 1], cmdStrings[i, 2],
-                                    cmdStrings[i, 3],
-                                    dataItem.byteID);
-                                if (cmd != null)
+                                else //普通指令可以直接构造并发送
                                 {
-                                    cmdQueue.Enqueue(cmd);
+                                    byte[] cmd = CmdClass.makeCommand(cmdStrings[i, 1], cmdStrings[i, 2],
+                                        cmdStrings[i, 3],
+                                        dataItem.byteID);
+                                    if (cmd != null)
+                                    {
+                                        cmdQueue.Enqueue(cmd);
+                                    }
                                 }
-                            }
+                            }//end of if (dataItem.status == true)
 
                         }//end of if (htClient.ContainsKey(cmdStrings[i, 0]))
 
@@ -437,7 +453,6 @@ public class MainUdpClass
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
                 UtilClass.writeLog(ex.ToString());
             }
             Thread.Sleep(checkDataBaseQueueTimeInterval);
@@ -466,7 +481,7 @@ public class MainUdpClass
         
         for (int i = startID; i <= stopID; i++)
         {
-            byte[] id = { 0x00, 0x00, 0x00, 0x1E };//信道为0x1E，固定不变//要放在里面，哈希表存的是指针
+            byte[] id = { 0x00, 0x00, 0x00, channel };//信道默认为0x1E//要放在里面，哈希表存的是指针
             id[1] = (byte)(i >> 8);
             id[2] = (byte)(i & 0xFF);
             strID = UtilClass.byteToHexStr(id);
