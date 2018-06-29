@@ -141,6 +141,7 @@ public class DbClass
 
     }
 
+    //20180629并且把命令表的命令状态改为默认值'-1'
     //更新所有设备在线信息为false
     public static string UpdateAllSensorInfoToFalse()
     {
@@ -157,7 +158,15 @@ public class DbClass
 
             if (IsDelSuccess != false)
             {
-                return "ok";
+                strSQL = "Update tcommand SET cmdName = '-1'";
+                if (IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss))
+                {
+                    return "ok";
+                }
+                else
+                {
+                    return "fail";
+                }
             }
             else
             {

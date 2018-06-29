@@ -112,6 +112,8 @@ class DataItem
                     updateItem0[4, 0] = "status";
                     updateItem0[4, 1] = status.ToString();
                     DbClass.UpdateSensorInfo(strID, updateItem0);
+                    //反馈命令执行状态
+                    DbClass.UpdateCmd(strID, "cmdName", "ok");
                     //反馈接收到的命令名称
                     MainUdpClass.getClientDataSuccess();
                     break;
@@ -157,6 +159,8 @@ class DataItem
                     updateItem2[9, 0] = "deviceID";
                     updateItem2[9, 1] = strID;
                     DbClass.insertRecord(updateItem2);
+                    //反馈命令执行状态
+                    DbClass.UpdateCmd(strID, "cmdName", "ok");
                     //反馈接收到的命令名称
                     MainUdpClass.getClientDataSuccess();
                     break;

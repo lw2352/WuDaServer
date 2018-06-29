@@ -273,6 +273,8 @@ public class MainUdpClass
             dataItem.sendCmdFailTimes = 0;
             //update sql
             DbClass.UpdateSensorInfo(dataItem.strID, "status", dataItem.status.ToString());
+            //反馈命令执行状态
+            DbClass.UpdateCmd(dataItem.strID, "cmdName", "fail");
             tCmdStatus.strID = null;
         }
         else

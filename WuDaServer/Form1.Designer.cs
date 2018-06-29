@@ -133,6 +133,8 @@
             this.Controls.Add(this.comboBoxIP);
             this.Controls.Add(this.btnStartService);
             this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(361, 208);
+            this.MinimumSize = new System.Drawing.Size(361, 208);
             this.Name = "Form1";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "激光探测器通信服务软件";
