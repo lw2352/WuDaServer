@@ -152,6 +152,18 @@ namespace WuDaServer
             IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
         }
 
+        //能级复位
+        private void btnResetLevel_Click(object sender, EventArgs e)
+        {
+            MySQLDB.InitDb();
+            //string strResult = "";
+            MySqlParameter[] parmss = null;
+            string strSQL = "";
+            bool IsDelSuccess = false;
+            strSQL =
+                "Update tcommand SET cmdName = 'resetLevel'";
 
+            IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
+        }
     }
 }

@@ -165,6 +165,16 @@ class DataItem
                     MainUdpClass.getClientDataSuccess();
                     break;
 
+                case 0x02:
+                    if (datagramBytes[10] == 0x55)
+                    {
+                        //反馈命令执行状态
+                        DbClass.UpdateCmd(strID, "cmdName", "ok");
+                        //反馈接收到的命令名称
+                        MainUdpClass.getClientDataSuccess();
+                    }
+                    break;
+
                 #region （暂时不用）设备升级相关命令
                 //升级
                 case 0x1E:

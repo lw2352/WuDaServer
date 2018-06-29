@@ -37,6 +37,7 @@
             this.textBoxStopID = new System.Windows.Forms.TextBox();
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnGetTimeAndLevel = new System.Windows.Forms.Button();
+            this.btnResetLevel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartService
@@ -100,29 +101,40 @@
             // 
             // btnSearch
             // 
-            this.btnSearch.Location = new System.Drawing.Point(250, 97);
+            this.btnSearch.Location = new System.Drawing.Point(238, 86);
             this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(75, 23);
+            this.btnSearch.Size = new System.Drawing.Size(83, 23);
             this.btnSearch.TabIndex = 8;
-            this.btnSearch.Text = "search";
+            this.btnSearch.Text = "搜索";
             this.btnSearch.UseVisualStyleBackColor = true;
             this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
             // 
             // btnGetTimeAndLevel
             // 
-            this.btnGetTimeAndLevel.Location = new System.Drawing.Point(250, 134);
+            this.btnGetTimeAndLevel.Location = new System.Drawing.Point(238, 115);
             this.btnGetTimeAndLevel.Name = "btnGetTimeAndLevel";
-            this.btnGetTimeAndLevel.Size = new System.Drawing.Size(75, 23);
+            this.btnGetTimeAndLevel.Size = new System.Drawing.Size(83, 23);
             this.btnGetTimeAndLevel.TabIndex = 9;
-            this.btnGetTimeAndLevel.Text = "getTimeAndLevel";
+            this.btnGetTimeAndLevel.Text = "读触发时间";
             this.btnGetTimeAndLevel.UseVisualStyleBackColor = true;
             this.btnGetTimeAndLevel.Click += new System.EventHandler(this.btnGetTimeAndLevel_Click);
+            // 
+            // btnResetLevel
+            // 
+            this.btnResetLevel.Location = new System.Drawing.Point(238, 144);
+            this.btnResetLevel.Name = "btnResetLevel";
+            this.btnResetLevel.Size = new System.Drawing.Size(83, 23);
+            this.btnResetLevel.TabIndex = 10;
+            this.btnResetLevel.Text = "探测器复位";
+            this.btnResetLevel.UseVisualStyleBackColor = true;
+            this.btnResetLevel.Click += new System.EventHandler(this.btnResetLevel_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(345, 169);
+            this.Controls.Add(this.btnResetLevel);
             this.Controls.Add(this.btnGetTimeAndLevel);
             this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.textBoxStopID);
@@ -155,6 +167,7 @@
         private System.Windows.Forms.TextBox textBoxStopID;
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.Button btnGetTimeAndLevel;
+        private System.Windows.Forms.Button btnResetLevel;
     }
 }
 

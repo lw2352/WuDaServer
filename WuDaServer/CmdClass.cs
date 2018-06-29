@@ -23,7 +23,7 @@ public class CmdClass
         //命令号
         htCmdNum.Add("search", 0x00);
         htCmdNum.Add("getTimeAndLevel", 0x01);
-
+        htCmdNum.Add("resetLevel", 0x02);
     }
 
     //构造命令
