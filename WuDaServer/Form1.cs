@@ -24,6 +24,9 @@ namespace WuDaServer
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            //test code
+            
+
             //初始化界面元素
             try
             {

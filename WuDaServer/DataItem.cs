@@ -124,7 +124,7 @@ class DataItem
                     strPreciseTime = datagramBytes[10].ToString().PadLeft(2, '0') + ":" + datagramBytes[11].ToString().PadLeft(2, '0') + ":" +
                                      datagramBytes[12].ToString().PadLeft(2, '0') + "." +
                                      (((int) datagramBytes[13] << 16) + ((int) datagramBytes[14] <<8) + 
-                                      (int) datagramBytes[15]).ToString();
+                                      (int) datagramBytes[15]).ToString().PadLeft(6, '0');
                     level = datagramBytes[16];
                     //写入数据库
                     updateItem1[0, 0] = "preciseTime";
