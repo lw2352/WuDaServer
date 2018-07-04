@@ -50,7 +50,7 @@ public class MainUdpClass
 
     public byte channel { get; set; }//信道
 
-    private static int updateDataLength = 32 * 1024;//升级文件最大长度
+    private static int updateDataLength = 16 * 1024;//升级文件最大长度,16K
 
     private static Socket ServerSocket;//用于接收
     //广播地址，255.255.255.255:6000
@@ -288,6 +288,7 @@ public class MainUdpClass
     }
 
     //成功收到设备数据，没有超时
+    //被dataitem类调用
     public static void getClientDataSuccess()
     {
         cmdTimer.Stop();//关闭定时器
@@ -297,7 +298,14 @@ public class MainUdpClass
             cmdQueue.Dequeue(); //移除一条命令
         }
     }
-    
+
+    //把升级命令加入队列
+    //被dataitem类调用
+    public static void addUpdateCmdToQueue(byte[] cmd)
+    {
+        cmdQueue.Enqueue(cmd);
+    }
+
 
     #endregion
 

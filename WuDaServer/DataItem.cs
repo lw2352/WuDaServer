@@ -186,12 +186,7 @@ class DataItem
                             DbClass.UpdateCmd(strID, "data", UtilClass.hex2String[tUpdate.currentNum]);
                             tUpdate.currentNum++;
                         }
-                        else if (datagramBytes[10] == 0xAA)
-                        {
-                            //写入数据库
-                            DbClass.UpdateCmd(strID, "cmdName", "fail");
-                        }
-                        //最多256个包(256K)
+                        //最多128个包(16K,每包128字节)
                         if (tUpdate.currentNum == 256)
                         {
                             tUpdate.IsNeedUpdate = false;
@@ -223,10 +218,10 @@ class DataItem
                 default:
                     break;
             }
-
+            //升级，这里改为向队列加命令
             if (tUpdate.IsNeedUpdate == true)
             {
-                SendCmd(SetUpdateCmd(tUpdate.currentNum));
+                MainUdpClass.addUpdateCmdToQueue(SetUpdateCmd(tUpdate.currentNum));
             }
         }
         catch (Exception ex)
@@ -281,28 +276,32 @@ class DataItem
     private byte[] SetUpdateCmd(int bulkCount)
     {
         /***************************************************************************7-读写位*8，9第几包**10-数据位*************************************/
-        byte[] Cmd = new byte[1024 + 13];
+        byte[] Cmd = new byte[128 + 13+3];
         byte[] bytesbulkCount = new byte[2];
         bytesbulkCount = intToBytes(bulkCount);
 
-        Cmd[0] = 0xA5;
-        Cmd[1] = 0xA5;
-        Cmd[2] = 0x1E;
-        Cmd[3] = byteID[0];
-        Cmd[4] = byteID[1];
-        Cmd[5] = byteID[2];
-        Cmd[6] = byteID[3];
-        Cmd[7] = 0x01;
-        Cmd[8] = bytesbulkCount[0];
-        Cmd[9] = bytesbulkCount[1];
-        for (int i = 0; i < 1024; i++)
+        Cmd[0] = byteID[1];//地址高8位
+        Cmd[1] = byteID[2];//地址低8位
+        Cmd[2] = byteID[3];//信道
+
+        Cmd[0 + 3] = 0xA5;
+        Cmd[1 + 3] = 0xA5;
+        Cmd[2 + 3] = 0x1E;
+        Cmd[3 + 3] = byteID[0];
+        Cmd[4 + 3] = byteID[1];
+        Cmd[5 + 3] = byteID[2];
+        Cmd[6 + 3] = byteID[3];
+        Cmd[7 + 3] = 0x01;
+        Cmd[8 + 3] = bytesbulkCount[0];
+        Cmd[9 + 3] = bytesbulkCount[1];
+        for (int i = 0; i < 128; i++)
         {
-            Cmd[10 + i] = updateData[bulkCount * 1024 + i];
+            Cmd[10 + 3 + i] = updateData[bulkCount * 128 + i];
         }
 
-        Cmd[1024 + 10 + 0] = 0xFF;
-        Cmd[1024 + 10 + 1] = 0x5A;
-        Cmd[1024 + 10 + 2] = 0x5A;
+        Cmd[128 + 10 + 3 + 0] = 0xFF;
+        Cmd[128 + 10 + 3 + 1] = 0x5A;
+        Cmd[128 + 10 + 3 + 2] = 0x5A;
         return (Cmd);
     }
 
