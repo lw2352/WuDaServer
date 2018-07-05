@@ -53,7 +53,7 @@
             // comboBoxIP
             // 
             this.comboBoxIP.FormattingEnabled = true;
-            this.comboBoxIP.Location = new System.Drawing.Point(77, 12);
+            this.comboBoxIP.Location = new System.Drawing.Point(102, 12);
             this.comboBoxIP.Name = "comboBoxIP";
             this.comboBoxIP.Size = new System.Drawing.Size(110, 20);
             this.comboBoxIP.TabIndex = 1;
@@ -61,40 +61,40 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(12, 15);
+            this.label1.Location = new System.Drawing.Point(13, 15);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(59, 12);
+            this.label1.Size = new System.Drawing.Size(83, 12);
             this.label1.TabIndex = 2;
-            this.label1.Text = "服务端IP:";
+            this.label1.Text = "选择服务端IP:";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 65);
+            this.label2.Location = new System.Drawing.Point(13, 63);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(59, 12);
+            this.label2.Size = new System.Drawing.Size(83, 12);
             this.label2.TabIndex = 3;
-            this.label2.Text = "起始ID号:";
+            this.label2.Text = "输入起始ID号:";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 108);
+            this.label3.Location = new System.Drawing.Point(13, 108);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(59, 12);
+            this.label3.Size = new System.Drawing.Size(83, 12);
             this.label3.TabIndex = 4;
-            this.label3.Text = "结束ID号:";
+            this.label3.Text = "输入结束ID号:";
             // 
             // textBoxStartID
             // 
-            this.textBoxStartID.Location = new System.Drawing.Point(77, 60);
+            this.textBoxStartID.Location = new System.Drawing.Point(102, 60);
             this.textBoxStartID.Name = "textBoxStartID";
             this.textBoxStartID.Size = new System.Drawing.Size(110, 21);
             this.textBoxStartID.TabIndex = 5;
             // 
             // textBoxStopID
             // 
-            this.textBoxStopID.Location = new System.Drawing.Point(77, 105);
+            this.textBoxStopID.Location = new System.Drawing.Point(102, 105);
             this.textBoxStopID.Name = "textBoxStopID";
             this.textBoxStopID.Size = new System.Drawing.Size(110, 21);
             this.textBoxStopID.TabIndex = 7;

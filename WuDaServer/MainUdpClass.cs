@@ -442,6 +442,7 @@ public class MainUdpClass
 
                                     //设置升级属性
                                     dataItem.tUpdate.IsNeedUpdate = true;
+                                    addUpdateCmdToQueue(dataItem.SetUpdateCmd(0));//加入命令，开始发送
                                 }
                                 else if(cmdStrings[i, 1] != "search")//普通指令可以直接构造并发送
                                 {

@@ -37,6 +37,7 @@ class DataItem
     private int battery;//电量
     private string strPreciseTime;//精确触发时刻
 
+    private int updatePacketLen = 64;
     /// <summary>
     /// 初始化DataItem
     /// </summary>
@@ -175,7 +176,7 @@ class DataItem
                     }
                     break;
 
-                #region （暂时不用）设备升级相关命令
+                #region 设备升级相关命令
                 //升级
                 case 0x1E:
                     if (tUpdate.IsNeedUpdate == true)
@@ -184,15 +185,19 @@ class DataItem
                         {
                             //写入数据库
                             DbClass.UpdateCmd(strID, "data", UtilClass.hex2String[tUpdate.currentNum]);
+                            //反馈接收到的命令名称
+                            MainUdpClass.getClientDataSuccess();
                             tUpdate.currentNum++;
                         }
-                        //最多128个包(16K,每包128字节)
-                        if (tUpdate.currentNum == 256)
+                        //最多256个包(16K,每包64字节)
+                        if (tUpdate.currentNum == (16*1024/ updatePacketLen))
                         {
                             tUpdate.IsNeedUpdate = false;
                             tUpdate.currentNum = 0;
                             //写入数据库
                             DbClass.UpdateCmd(strID, "cmdName", "ok");
+                            //写入数据库
+                            DbClass.UpdateCmd(strID, "data", "updateFinished");
                         }
                     }
                     break;
@@ -203,6 +208,8 @@ class DataItem
                     {
                         //写入数据库
                         DbClass.UpdateCmd(strID, "cmdName", "ok");
+                        //反馈接收到的命令名称
+                        MainUdpClass.getClientDataSuccess();
                     }
                     break;
 
@@ -210,6 +217,8 @@ class DataItem
                 case 0x24:
                     //写入数据库
                     DbClass.UpdateCmd(strID, "data", UtilClass.hex2String[datagramBytes[10]]);
+                    //反馈接收到的命令名称
+                    MainUdpClass.getClientDataSuccess();
                     break;
 
 
@@ -273,10 +282,10 @@ class DataItem
     /// </summary>
     /// <param name="bulkCount"></param>
     /// <returns></returns>
-    private byte[] SetUpdateCmd(int bulkCount)
+    public byte[] SetUpdateCmd(int bulkCount)
     {
         /***************************************************************************7-读写位*8，9第几包**10-数据位*************************************/
-        byte[] Cmd = new byte[128 + 13+3];
+        byte[] Cmd = new byte[updatePacketLen + 13+3];
         byte[] bytesbulkCount = new byte[2];
         bytesbulkCount = intToBytes(bulkCount);
 
@@ -294,14 +303,14 @@ class DataItem
         Cmd[7 + 3] = 0x01;
         Cmd[8 + 3] = bytesbulkCount[0];
         Cmd[9 + 3] = bytesbulkCount[1];
-        for (int i = 0; i < 128; i++)
+        for (int i = 0; i < updatePacketLen; i++)
         {
-            Cmd[10 + 3 + i] = updateData[bulkCount * 128 + i];
+            Cmd[10 + 3 + i] = updateData[bulkCount * updatePacketLen + i];
         }
 
-        Cmd[128 + 10 + 3 + 0] = 0xFF;
-        Cmd[128 + 10 + 3 + 1] = 0x5A;
-        Cmd[128 + 10 + 3 + 2] = 0x5A;
+        Cmd[updatePacketLen + 10 + 3 + 0] = 0xFF;
+        Cmd[updatePacketLen + 10 + 3 + 1] = 0x5A;
+        Cmd[updatePacketLen + 10 + 3 + 2] = 0x5A;
         return (Cmd);
     }
 

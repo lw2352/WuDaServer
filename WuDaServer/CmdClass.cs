@@ -24,6 +24,9 @@ public class CmdClass
         htCmdNum.Add("search", 0x00);
         htCmdNum.Add("getTimeAndLevel", 0x01);
         htCmdNum.Add("resetLevel", 0x02);
+
+        htCmdNum.Add("reboot", 0x21);
+        htCmdNum.Add("version", 0x24);
     }
 
     //构造命令

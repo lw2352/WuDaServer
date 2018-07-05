@@ -56,6 +56,16 @@ namespace WuDaServer
                 comboBoxIP.SelectedIndex = index;
                 textBoxStartID.Text = System.Configuration.ConfigurationManager.AppSettings["startID"];
                 textBoxStopID.Text = System.Configuration.ConfigurationManager.AppSettings["stopID"];
+
+#if DEBUG
+                btnSearch.Visible = true;
+                btnGetTimeAndLevel.Visible = true;
+                btnResetLevel.Visible = true;
+#else
+                btnSearch.Visible = false;
+                btnGetTimeAndLevel.Visible = false;
+                btnResetLevel.Visible = false;
+#endif
             }
             catch (Exception ex)
             {
