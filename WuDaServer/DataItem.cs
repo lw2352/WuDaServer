@@ -84,6 +84,9 @@ class DataItem
     {
         try
         {
+            //记得每次收到数据后把超时次数重置为0
+            sendCmdFailTimes = 0;
+
             switch (datagramBytes[2])
             {               
                 //搜索设备

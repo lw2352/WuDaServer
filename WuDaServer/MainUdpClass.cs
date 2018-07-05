@@ -293,6 +293,7 @@ public class MainUdpClass
     {
         cmdTimer.Stop();//关闭定时器
         tCmdStatus.strID = null;
+        
         if (cmdQueue.Count > 0)
         {          
             cmdQueue.Dequeue(); //移除一条命令
