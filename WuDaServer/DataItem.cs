@@ -103,7 +103,8 @@ class DataItem
                     Latitude = (int)(Latitude * 1000000);
                     Latitude = Latitude / 1000000;
 
-                    battery = (((int)datagramBytes[20] << 8) + datagramBytes[21]-3000)*3/100;//3v--0,6v--100
+                    battery = ((datagramBytes[20] << 8) + datagramBytes[21]-3000)*3/100;//3v--0,6v--100
+                    battery = battery < 100 ? battery : 100;//电量大于100是取最大值100
                     //更新经纬度和电量到数据库
                     updateItem0[0, 0] = "Latitude";
                     updateItem0[0, 1] = Latitude.ToString();
