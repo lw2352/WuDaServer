@@ -38,6 +38,7 @@ class DataItem
     private string strPreciseTime;//精确触发时刻
 
     private int updatePacketLen = 64;
+
     /// <summary>
     /// 初始化DataItem
     /// </summary>
@@ -103,13 +104,13 @@ class DataItem
                     Latitude = (int)(Latitude * 1000000);
                     Latitude = Latitude / 1000000;
 
-                    battery = ((datagramBytes[20] << 8) + datagramBytes[21]-3000)*3/100;//3v--0,6v--100
+                    battery = ((datagramBytes[20] << 8) + datagramBytes[21]-3000)/30;//3v--0,6v--100
                     battery = battery < 100 ? battery : 100;//电量大于100是取最大值100
                     //更新经纬度和电量到数据库
                     updateItem0[0, 0] = "Latitude";
-                    updateItem0[0, 1] = Latitude.ToString();
+                    updateItem0[0, 1] = Latitude.ToString().PadRight(9, '0');
                     updateItem0[1, 0] = "Longitude";
-                    updateItem0[1, 1] = Longitude.ToString();
+                    updateItem0[1, 1] = Longitude.ToString().PadRight(10, '0');
                     updateItem0[2, 0] = "battery";
                     updateItem0[2, 1] = battery.ToString();
                     updateItem0[3, 0] = "lastLoginTime";
@@ -170,7 +171,7 @@ class DataItem
                     MainUdpClass.getClientDataSuccess();
                     break;
 
-                case 0x02:
+                case 0x02://resetLevel
                     if (datagramBytes[10] == 0x55)
                     {
                         //反馈命令执行状态

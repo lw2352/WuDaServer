@@ -25,7 +25,7 @@ namespace WuDaServer
         private void Form1_Load(object sender, EventArgs e)
         {
             //test code
-            //int battery = ((0x20 << 8) + 0x7d - 3000) * 3 / 100;
+            //int battery = (1000) /30;
             //battery = battery < 100 ? battery : 100;
 
             //初始化界面元素
