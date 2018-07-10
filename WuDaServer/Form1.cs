@@ -27,6 +27,8 @@ namespace WuDaServer
             //test code
             //int battery = (1000) /30;
             //battery = battery < 100 ? battery : 100;
+            //double la = 114.4543166;
+            //string str=la.ToString("F6");
 
             //初始化界面元素
             try

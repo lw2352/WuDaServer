@@ -97,20 +97,21 @@ class DataItem
                     HeartTime = DateTime.Now;
                     Latitude = datagramBytes[10] + (double)datagramBytes[11] / 60 + ((double)datagramBytes[12]/100+ (double)datagramBytes[13]/1000+ (double)datagramBytes[14]/100000)/60;
                     Longitude = datagramBytes[15] + (double)datagramBytes[16] / 60 + ((double)datagramBytes[17] / 100 + (double)datagramBytes[18] / 1000 + (double)datagramBytes[19] / 100000) / 60;
+                    //20180710采样tostring的内部方法，保留小数6位
                     //保留6位小数
-                    Longitude = (int)(Longitude * 1000000);
-                    Longitude = Longitude / 1000000;
+                    //Longitude = (int)(Longitude * 1000000);
+                    //Longitude = Longitude / 1000000;
 
-                    Latitude = (int)(Latitude * 1000000);
-                    Latitude = Latitude / 1000000;
+                    //Latitude = (int)(Latitude * 1000000);
+                    //Latitude = Latitude / 1000000;
 
                     battery = ((datagramBytes[20] << 8) + datagramBytes[21]-3000)/30;//3v--0,6v--100
                     battery = battery < 100 ? battery : 100;//电量大于100是取最大值100
                     //更新经纬度和电量到数据库
                     updateItem0[0, 0] = "Latitude";
-                    updateItem0[0, 1] = Latitude.ToString().PadRight(9, '0');
+                    updateItem0[0, 1] = Latitude.ToString("F6");
                     updateItem0[1, 0] = "Longitude";
-                    updateItem0[1, 1] = Longitude.ToString().PadRight(10, '0');
+                    updateItem0[1, 1] = Longitude.ToString("F6");
                     updateItem0[2, 0] = "battery";
                     updateItem0[2, 1] = battery.ToString();
                     updateItem0[3, 0] = "lastLoginTime";
