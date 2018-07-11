@@ -146,9 +146,9 @@ class DataItem
 
                     //添加记录到trecord表
                     updateItem2[0, 0] = "Latitude";
-                    updateItem2[0, 1] = Latitude.ToString();
+                    updateItem2[0, 1] = Latitude.ToString("F6");
                     updateItem2[1, 0] = "Longitude";
-                    updateItem2[1, 1] = Longitude.ToString();
+                    updateItem2[1, 1] = Longitude.ToString("F6");
                     updateItem2[2, 0] = "battery";
                     updateItem2[2, 1] = battery.ToString();
                     updateItem2[3, 0] = "lastLoginTime";
@@ -214,6 +214,13 @@ class DataItem
                     {
                         //写入数据库
                         DbClass.UpdateCmd(strID, "cmdName", "ok");
+                        //反馈接收到的命令名称
+                        MainUdpClass.getClientDataSuccess();
+                    }
+                    else if (datagramBytes[10] == 0xAA)
+                    {
+                        //写入数据库
+                        DbClass.UpdateCmd(strID, "cmdName", "fail");
                         //反馈接收到的命令名称
                         MainUdpClass.getClientDataSuccess();
                     }
