@@ -51,6 +51,7 @@ public class MainUdpClass
     public byte channel { get; set; }//信道
 
     private static int updateDataLength = 16 * 1024;//升级文件最大长度,16K
+    private int updatePacketLen = 64;//每包数据最大长度
 
     private static Socket ServerSocket;//用于接收
     //广播地址，255.255.255.255:6000
@@ -265,26 +266,30 @@ public class MainUdpClass
     //定时器回调，接收超时
     private void cmdOverTime(object source, ElapsedEventArgs e)
     {
-        DataItem dataItem = (DataItem)htClient[tCmdStatus.strID]; //取出ID对应的dataitem
-        if (dataItem.sendCmdFailTimes == maxOverTimes)
-        {          
-            cmdQueue.Dequeue();
-            dataItem.status = false;
-            dataItem.sendCmdFailTimes = 0;
-            //update sql
-            DbClass.UpdateSensorInfo(dataItem.strID, "status", dataItem.status.ToString());
-            //反馈命令执行状态
-            DbClass.UpdateCmd(dataItem.strID, "cmdName", "fail");
-            tCmdStatus.strID = null;
+        lock (cmdQueue)
+        {
+            DataItem dataItem = (DataItem)htClient[tCmdStatus.strID]; //取出ID对应的dataitem
+            if (dataItem.sendCmdFailTimes == maxOverTimes)
+            {
+                cmdQueue.Dequeue();
+                dataItem.status = false;
+                dataItem.sendCmdFailTimes = 0;
+                //update sql
+                DbClass.UpdateSensorInfo(dataItem.strID, "status", dataItem.status.ToString());
+                //反馈命令执行状态
+                DbClass.UpdateCmd(dataItem.strID, "cmdName", "fail");
+                tCmdStatus.strID = null;
+            }
+            else
+            {
+                byte[] cmd = cmdQueue.Dequeue(); //读取 Queue<T> 开始处的对象并移除
+                cmdQueue.Enqueue(cmd);//加到队尾            
+                dataItem.sendCmdFailTimes++;
+                UtilClass.writeLog("从设备" + tCmdStatus.strID + "接收" + tCmdStatus.cmdName + "命令超时次数为" + dataItem.sendCmdFailTimes.ToString());
+                tCmdStatus.strID = null;
+            }
         }
-        else
-        {           
-            byte[] cmd = cmdQueue.Dequeue(); //读取 Queue<T> 开始处的对象并移除
-            cmdQueue.Enqueue(cmd);//加到队尾            
-            dataItem.sendCmdFailTimes++;
-            UtilClass.writeLog("从设备" + tCmdStatus.strID + "接收"+tCmdStatus.cmdName+"命令超时次数为"+ dataItem.sendCmdFailTimes.ToString());
-            tCmdStatus.strID = null;
-        }
+        
     }
 
     //成功收到设备数据，没有超时
@@ -443,7 +448,11 @@ public class MainUdpClass
 
                                     //设置升级属性
                                     dataItem.tUpdate.IsNeedUpdate = true;
-                                    addUpdateCmdToQueue(dataItem.SetUpdateCmd(0));//加入命令，开始发送
+                                    //20180716改为一次性加入所有命令
+                                    for (int count = 0; count < updateDataLength / updatePacketLen; count++)
+                                    {
+                                        addUpdateCmdToQueue(dataItem.SetUpdateCmd(count)); //加入命令，开始发送
+                                    }
                                 }
                                 else if(cmdStrings[i, 1] != "search")//普通指令可以直接构造并发送
                                 {

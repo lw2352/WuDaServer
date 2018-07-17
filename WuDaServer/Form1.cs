@@ -162,8 +162,9 @@ namespace WuDaServer
             MySqlParameter[] parmss = null;
             string strSQL = "";
             bool IsDelSuccess = false;
+            string data = "00";
             strSQL =
-                "Update tcommand SET cmdName = 'getTimeAndLevel'";
+                "Update tcommand SET cmdName = 'getTimeAndLevel', data=" + "\"" + data + "\"";
 
             IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
         }
@@ -176,9 +177,51 @@ namespace WuDaServer
             MySqlParameter[] parmss = null;
             string strSQL = "";
             bool IsDelSuccess = false;
+            string data = "00";
             strSQL =
-                "Update tcommand SET cmdName = 'resetLevel'";
+                "Update tcommand SET cmdName = 'resetLevel', data=" + "\"" + data + "\"";
 
+            IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
+        }
+
+        private void btn_update_Click(object sender, EventArgs e)
+        {
+            MySQLDB.InitDb();
+            //string strResult = "";
+            MySqlParameter[] parmss = null;
+            string strSQL = "";
+            bool IsDelSuccess = false;
+            string path = "D:\\\\files\\\\output(mdk).bin";
+            strSQL =
+                "Update tcommand SET cmdName = 'update', data=" + "\"" + path+ "\"";
+
+            IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
+        }
+
+        private void btn_reboot_Click(object sender, EventArgs e)
+        {
+            MySQLDB.InitDb();
+            //string strResult = "";
+            MySqlParameter[] parmss = null;
+            string strSQL = "";
+            bool IsDelSuccess = false;
+            string data = "00";
+            strSQL =
+                "Update tcommand SET cmdName = 'reboot', data=" + "\"" + data + "\"";
+
+            IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
+        }
+
+        private void btn_version_Click(object sender, EventArgs e)
+        {
+            MySQLDB.InitDb();
+            //string strResult = "";
+            MySqlParameter[] parmss = null;
+            string strSQL = "";
+            bool IsDelSuccess = false;
+            string data = "00";
+            strSQL =
+                "Update tcommand SET cmdName = 'version', data=" + "\"" + data + "\"";
             IsDelSuccess = MySQLDB.ExecuteNonQry(strSQL, parmss);
         }
     }

@@ -132,7 +132,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="WuDaServer_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="xamarine.ico" />

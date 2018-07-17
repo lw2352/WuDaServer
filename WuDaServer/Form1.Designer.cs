@@ -39,6 +39,9 @@
             this.btnSearch = new System.Windows.Forms.Button();
             this.btnGetTimeAndLevel = new System.Windows.Forms.Button();
             this.btnResetLevel = new System.Windows.Forms.Button();
+            this.btn_update = new System.Windows.Forms.Button();
+            this.btn_reboot = new System.Windows.Forms.Button();
+            this.btn_version = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // btnStartService
@@ -130,11 +133,44 @@
             this.btnResetLevel.UseVisualStyleBackColor = true;
             this.btnResetLevel.Click += new System.EventHandler(this.btnResetLevel_Click);
             // 
+            // btn_update
+            // 
+            this.btn_update.Location = new System.Drawing.Point(51, 134);
+            this.btn_update.Name = "btn_update";
+            this.btn_update.Size = new System.Drawing.Size(54, 23);
+            this.btn_update.TabIndex = 11;
+            this.btn_update.Text = "update";
+            this.btn_update.UseVisualStyleBackColor = true;
+            this.btn_update.Click += new System.EventHandler(this.btn_update_Click);
+            // 
+            // btn_reboot
+            // 
+            this.btn_reboot.Location = new System.Drawing.Point(111, 134);
+            this.btn_reboot.Name = "btn_reboot";
+            this.btn_reboot.Size = new System.Drawing.Size(54, 23);
+            this.btn_reboot.TabIndex = 12;
+            this.btn_reboot.Text = "reboot";
+            this.btn_reboot.UseVisualStyleBackColor = true;
+            this.btn_reboot.Click += new System.EventHandler(this.btn_reboot_Click);
+            // 
+            // btn_version
+            // 
+            this.btn_version.Location = new System.Drawing.Point(171, 134);
+            this.btn_version.Name = "btn_version";
+            this.btn_version.Size = new System.Drawing.Size(61, 23);
+            this.btn_version.TabIndex = 13;
+            this.btn_version.Text = "version";
+            this.btn_version.UseVisualStyleBackColor = true;
+            this.btn_version.Click += new System.EventHandler(this.btn_version_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(345, 169);
+            this.Controls.Add(this.btn_version);
+            this.Controls.Add(this.btn_reboot);
+            this.Controls.Add(this.btn_update);
             this.Controls.Add(this.btnResetLevel);
             this.Controls.Add(this.btnGetTimeAndLevel);
             this.Controls.Add(this.btnSearch);
@@ -170,6 +206,9 @@
         private System.Windows.Forms.Button btnSearch;
         private System.Windows.Forms.Button btnGetTimeAndLevel;
         private System.Windows.Forms.Button btnResetLevel;
+        private System.Windows.Forms.Button btn_update;
+        private System.Windows.Forms.Button btn_reboot;
+        private System.Windows.Forms.Button btn_version;
     }
 }
 

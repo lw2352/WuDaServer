@@ -240,11 +240,12 @@ class DataItem
                 default:
                     break;
             }
+            //20180716改为一次性加入所有命令
             //升级，这里改为向队列加命令
-            if (tUpdate.IsNeedUpdate == true)
+            /*if (tUpdate.IsNeedUpdate == true)
             {
                 MainUdpClass.addUpdateCmdToQueue(SetUpdateCmd(tUpdate.currentNum));
-            }
+            }*/
         }
         catch (Exception ex)
         {
